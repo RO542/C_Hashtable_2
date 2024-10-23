@@ -27,7 +27,7 @@ bool ht_init(Hashtable *ht, size_t key_size, size_t value_size) {
 
 Hashtable *ht_create(size_t key_size, size_t value_size) {
     Hashtable *ht = (Hashtable *)malloc(sizeof(Hashtable));
-    if (!ht)  {
+    if (!ht) {
         fprintf(stderr, "Failed to allocate hashtable during ht_create\n");
         return false;
     }
@@ -38,7 +38,7 @@ Hashtable *ht_create(size_t key_size, size_t value_size) {
     return ht;
 }
 
-HTNode *ht_create_node(Hashtable *ht, void *key, void *value) {
+HTNode *ht_create_node(Hashtable *ht, const void *key, const void *value) {
     HTNode *new_node = (HTNode *)malloc(sizeof(HTNode));
     if (!new_node) {
         fprintf(stderr, "Failed to allocate new HTNode in ht_put\n");
@@ -64,7 +64,7 @@ HTNode *ht_create_node(Hashtable *ht, void *key, void *value) {
     return new_node;
 }
 
-bool ht_put(Hashtable *ht, void *key, void *value) {
+bool ht_put(Hashtable *ht, const void *key, const void *value) {
     if ((float)ht->count / ht->arr_cap >= 0.75) {
         if (!ht_resize(ht, 2 * ht->arr_cap)) {
             fprintf(stderr, "Failed call to ht_resize in ht_put\n");
@@ -118,7 +118,7 @@ bool ht_resize(Hashtable *ht, unsigned int new_size) {
     return true;
 }
 
-void *ht_find(Hashtable *ht, void *key) {
+void *ht_find(const Hashtable *ht, const void *key) {
     unsigned int key_hash = hash_func(key, ht->key_size);
     unsigned int bucket_idx = key_hash % ht->arr_cap;
     for (HTNode *curr_node = ht->arr[bucket_idx]; curr_node != NULL; curr_node = curr_node->next) {
@@ -129,8 +129,8 @@ void *ht_find(Hashtable *ht, void *key) {
     return NULL;
 }
 
-bool ht_contains(Hashtable *ht, void *key) {
-    return (ht_find(ht, key) != NULL);
+bool ht_contains(const Hashtable *ht, const void *key) {
+    return ht_find(ht, key) != NULL;
 }
 
 void ht_destroy_node(HTNode *node) {
@@ -145,7 +145,7 @@ void ht_destroy_node(HTNode *node) {
 }
 
 
-void ht_delete(Hashtable *ht, void *key) {
+void ht_delete(Hashtable *ht, const void *key) {
     if (ht_empty(ht)) {
         fprintf(stderr, "Unable to remvoe key from empty Hashtable\n");
         return;
@@ -191,7 +191,7 @@ void ht_deinit(Hashtable *ht) {
     ht->arr = NULL;
 }
 
-bool ht_empty(Hashtable *ht) {
+bool ht_empty(const Hashtable *ht) {
     return ht->count == 0;
 }
 
@@ -204,7 +204,7 @@ void ht_destroy(Hashtable **ht_ptr) {
     }
 }
 
-unsigned int hash_func(void *key, size_t key_size) {
+unsigned int hash_func(const void *key, size_t key_size) {
     return XXH32(key, key_size, 0); 
 }
 

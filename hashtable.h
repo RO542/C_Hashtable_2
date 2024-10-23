@@ -25,25 +25,25 @@ bool is_prime(unsigned int x);
 unsigned int next_prime(unsigned int x);
 
 void ht_destroy_node(HTNode *);
-unsigned int hash_func(void *key, size_t key_size);
-// Hashtable *ht_create(size_t element_size);
+unsigned int hash_func(const void *key, size_t key_size);
+Hashtable *ht_create(size_t key_size, size_t value_size);
 bool ht_init(Hashtable *ht, size_t key_size, size_t element_size);
 
 void ht_deinit(Hashtable *ht);
 
-HTNode *ht_create_node(Hashtable *ht, void *key, void *value);
-bool ht_put(Hashtable *ht, void *key, void *value);
+HTNode *ht_create_node(Hashtable *ht, const void *key, const void *value);
+bool ht_put(Hashtable *ht, const void *key, const void *value);
 
 bool ht_resize(Hashtable *ht, unsigned int new_size);
 
-void *ht_find(Hashtable *ht, void *key);
-bool ht_contains(Hashtable *ht, void *key);
+void *ht_find(const Hashtable *ht, const void *key);
+bool ht_contains(const Hashtable *ht, const void *key);
 
-void ht_delete(Hashtable *ht, void *key);
+void ht_delete(Hashtable *ht, const void *key);
 
 void ht_clear(Hashtable *ht);
 
 void ht_destroy(Hashtable **ht);
 
-bool ht_empty(Hashtable *ht);
+bool ht_empty(const Hashtable *ht);
 
