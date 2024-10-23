@@ -20,9 +20,7 @@ bool ht_init(Hashtable *ht, size_t key_size, size_t value_size) {
     ht->count = 0;
     ht->key_size = key_size;
     ht->value_size = value_size;
-    for (int i = 0; i < ht->arr_cap; i++) {
-        ht->arr[i] = NULL;
-    }
+    memset(ht->arr, 0, ht->arr_cap * sizeof(HTNode *)); 
     return true;
 }
 
@@ -103,10 +101,7 @@ bool ht_resize(Hashtable *ht, unsigned int new_size) {
     }
     ht->count = 0;
     ht->arr_cap = new_cap;
-
-    for (int i = 0; i < ht->arr_cap; i++) {
-        ht->arr[i] = NULL;
-    }
+    memset(ht->arr, 0, (new_cap * sizeof(HTNode *)));
 
     for (int i = 0; i < old_cap; i++) {
         HTNode *curr_node;
@@ -238,7 +233,6 @@ unsigned int next_prime(unsigned int x) {
 }
 
 
-/*
 int main() {
     Hashtable *ht = ht_create(sizeof(int), sizeof(int));
     int key = 42;
@@ -278,4 +272,4 @@ int main() {
     assert(ht_empty(ht));
     ht_destroy(&ht);
     return 0;
-} */
+} 
