@@ -147,7 +147,7 @@ void ht_destroy_node(HTNode *node) {
 
 void ht_delete(Hashtable *ht, const void *key) {
     if (ht_empty(ht)) {
-        fprintf(stderr, "Unable to remvoe key from empty Hashtable\n");
+        fprintf(stderr, "Unable to remove key from empty Hashtable\n");
         return;
     }
     unsigned int key_hash = hash_func(key, ht->key_size);
@@ -170,6 +170,7 @@ void ht_delete(Hashtable *ht, const void *key) {
     }
 
 }
+
 
 void ht_clear(Hashtable *ht) {
     for (int i = 0; i < ht->arr_cap; i++) {
@@ -195,7 +196,7 @@ bool ht_empty(const Hashtable *ht) {
     return ht->count == 0;
 }
 
-void ht_destroy(Hashtable **ht_ptr) {
+void _ht_destroy(Hashtable **ht_ptr) {
     if (ht_ptr && (*ht_ptr)) {
         Hashtable *ht = *ht_ptr;
         ht_deinit(ht);
@@ -270,6 +271,7 @@ int main() {
 
     // Test ht_empty
     assert(ht_empty(ht));
-    ht_destroy(&ht);
+    // ht_destroy(&ht);
+    ht_destroy(ht);
     return 0;
 } 
