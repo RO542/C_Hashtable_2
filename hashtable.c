@@ -110,7 +110,6 @@ bool ht_resize(Hashtable *ht, unsigned int new_cap) {
         return false; // Return early on allocation failure
     }
 
-    ht->count = 0;
     ht->arr_cap = new_capacity;
     memset(ht->arr, 0, (new_capacity * sizeof(HTNode *)));
     for (unsigned int i = 0; i < old_cap; i++) {

@@ -45,9 +45,14 @@ void test_resize() {
     for (int i = 0; i < 60; i++) {
         int x = i;
         int y = i;
-        ht_put(ht, &x, &y);
+        assert(ht_put(ht, &x, &y));
     }
-    ht_resize(ht, 500);
+    unsigned int old_cap = ht->arr_cap;
+    unsigned int old_count = ht->count;
+    ht_resize(ht, 1500);
+    assert(ht);
+    assert(ht->count == old_count);
+    assert(ht->arr_cap > old_cap);
     return;
 
     int *out;
