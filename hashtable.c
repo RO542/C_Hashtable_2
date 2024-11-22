@@ -128,7 +128,6 @@ bool ht_resize(Hashtable *ht, unsigned int new_cap) {
     return true;
 }
 
-// returns a pointer to the value associated with a key if the key exists, else NULL
 void *ht_find(const Hashtable *ht, const void *key) {
     unsigned int key_hash = hash_func(key, ht->key_size);
     unsigned int bucket_idx = key_hash % ht->arr_cap;
@@ -234,46 +233,40 @@ void _ht_destroy(Hashtable **ht_ptr) {
 }
 
 
-typedef struct HTIterator {
-    const Hashtable *ht;
-    unsigned int bucket_idx;
-    HTNode *curr_node;
-} HTIterator;
+//TODO: complete the iterator functions init/create, next, restart, destroy
+//TODO: consider wrapping the key, val pair in a new struct type HTEntry and embedding that in each node
+// HTIterator* ht_iterator_init(Hashtable *ht) {
+//     if (!ht) {
+//         fprintf(stderr, "To initialize an iterator you need a valid hashtable pointer\n");
+//         return NULL;
+//     }
 
-HTIterator* ht_iterator_init(Hashtable *ht) {
-    if (!ht) {
-        fprintf(stderr, "To initialize an iterator you need a valid hashtable pointer\n");
-        return NULL;
-    }
+//     HTIterator *iter = malloc(sizeof(HTIterator));
+//     if (!iter) {
+//         fprintf(stderr, "Failed to initialize hashtable iterator\n");
+//         return NULL;
+//     }
 
-    HTIterator *iter = malloc(sizeof(HTIterator));
-    if (!iter) {
-        fprintf(stderr, "Failed to initialize hashtable iterator\n");
-        return NULL;
-    }
-    iter->bucket_idx = 0;
-    iter->curr_node = NULL;
-    // iter->curr_node = (HTNode*)ht->arr[0];
-    return iter;
-}
+// }
 
 
-HTNode* ht_iterator_next(HTIterator *iter) {
-    HTNode *curr_node = iter->ht->arr[iter->bucket_idx]; // get LL head 
-    if (!curr_node) {
-        while (!curr_node) {
-            curr_node = iter->ht->arr[++iter->bucket_idx];
-        }
-    }
-    if (iter->bucket_idx == iter->ht->arr_cap && !curr_node->next) {
-        return NULL;
-    }
-    iter->curr_node = curr_node->next;
-    return curr_node;
-}
+// HTNode* ht_iterator_next(HTIterator *iter) {
+//     HTNode *curr_node = iter->ht->arr[iter->bucket_idx]; // get LL head 
+//     if (!curr_node) {
+//         while (!curr_node) {
+//             curr_node = iter->ht->arr[++iter->bucket_idx];
+//         }
+//     }
+//     if (iter->bucket_idx == iter->ht->arr_cap && !curr_node->next) {
+//         return NULL;
+//     }
+//     iter->curr_node = curr_node->next;
+//     return curr_node;
+// }
 
 
 static unsigned int hash_func(const void *key, size_t key_size) {
+    // return djb2(key, key_size);
     return XXH32(key, key_size, 0);
 }
 
@@ -301,6 +294,15 @@ unsigned int next_prime(unsigned int x) {
     return x;
 }
 
+static unsigned int djb2(const void *key, size_t key_size) {
+    unsigned int hash = 5381;
+    const unsigned char *ptr = (unsigned char *)key;
+    const unsigned char *end = ptr + key_size;
+    for (int c = *ptr++; ptr < end; c = *ptr++) {
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+    }
+    return hash;
+}
 
 /*
 int main() {
